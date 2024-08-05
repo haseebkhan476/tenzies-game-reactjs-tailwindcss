@@ -6,8 +6,19 @@ import Confetti from "react-confetti";
 function App() {
   
   // States
+  const [secondsLeft, setSecondsLeft] = React.useState(5);
   const [dice, setDice] = React.useState(allNewDice());
   const [tenzies, setTenzies] = React.useState(false);
+
+  React.useEffect(() => {
+    if (secondsLeft <= 0) return;
+
+    const timeout = setTimeout(() => {
+      setSecondsLeft(prevSecondsLeft => prevSecondsLeft - 1);
+    }, 1000);
+
+    return () =>  clearTimeout(timeout);
+  }, [secondsLeft]);
 
   React.useEffect(() => {
     const allHeld = dice.every(die => die.isHeld);
@@ -66,7 +77,8 @@ function App() {
   return (
     <main className="bg-slate-50 flex justify-center items-center h-screen">
       { tenzies && <Confetti /> }
-      <div className="bg-white max-w-xl h-fit rounded-3xl shadow text-center p-14 relative overflow-hidden">
+      <div className="relative bg-white max-w-xl h-fit rounded-3xl shadow text-center p-14 overflow-hidden">
+        <h1 className="absolute top-4 right-4 w-14 h-14 rounded-full border border-black text-2xl font-bold flex items-center justify-center">{ secondsLeft }</h1>
         <h1 className="mb-4 text-4xl font-bold">Tenzies</h1>
         <p className="mb-8 text-lg">Roll until all dice are the same. Click each die to freeze it at its current value betweem rolls.</p>
         <div className="w-full grid grid-cols-5 gap-y-6">
